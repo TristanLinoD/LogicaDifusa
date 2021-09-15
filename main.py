@@ -1,7 +1,9 @@
 import pandas as pd
 import traceback
+import numpy as np
 
 rango = []
+resultado = []
 
 def traslape():
     for i in range(1,len(rango)):
@@ -15,6 +17,9 @@ def traslape():
 def validarMinMax(minimo, maximo):
     return False if minimo > maximo else True
 
+def pertenencia(linea):
+    indice = linea.index(max(linea))
+    return rango[indice]["descripcion"]
 
 def rangos():
     while(True):     
@@ -41,13 +46,51 @@ def rangos():
                 print('Vuelve a introducir el ultimo rango')
         i += 1
 
-def membresiaTriangulo(x, a, b, c):
-    pass
+def triangulo(x, a, b, c):
+    # print(f'{a}, {b}, {c}')
+    if x <= a:
+        return 0
+    elif a <= x <= b:
+        return ((x-a)/(b-a))
+    elif b <= x <= c:
+        return ((c-x)/(c-b))
+    else:
+        return 0
+            
+
+def proceso(valores):
+    linea = []
+    for valor in valores:
+        for i in range(len(rango)):
+            r1 = float(triangulo(valor, rango[i]["min"],  (rango[i]["min"]+rango[i]["max"])/2 , rango[i]["max"]))
+            linea.append(r1)
+        linea.append(max(linea))
+        linea.append(pertenencia(linea))
+        resultado.append(linea)
+        linea = []
+
+def salida(valores):
+    r = np.transpose(np.array(resultado))
+    titulos = ['Valores']
+    datos = {'Valores': valores}
+    for i in range(len(rango)):
+        datos['GV ' + rango[i]["descripcion"]] = r[i]
+        titulos.append('GV ' + rango[i]["descripcion"])
+    datos["GV MAX"] = r[len(r)-2]
+    titulos.append("GV MAX")
+    datos["Pertenencia"] = r[len(r)-1]
+    titulos.append("Pertenencia")
+    sd = pd.DataFrame(datos, columns= titulos)
+    sd.to_excel('./salida.xlsx', sheet_name='Resultados')
 
 def main():
-    df = pd.read_excel('./entrada.xlsx')
+    df = pd.read_excel('./entrada.xlsx', sheet_name='LogicaDifusa')
+    tamanio = len(df["Valores"])
+    valores = [float(df["Valores"][valor]) for valor in range(tamanio)]
     rangos()
-    print(rango)
+    proceso(valores)
+    salida(valores)
+    
 
 
 
