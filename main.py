@@ -17,8 +17,10 @@ def traslape():
 def validarMinMax(minimo, maximo):
     return False if minimo > maximo else True
 
-def pertenencia(linea):
+def pertenencia(linea, valor):
     indice = linea.index(max(linea))
+    if valor > rango[len(rango)-1]["max"]:
+        return rango[len(rango)-1]["descripcion"]
     return rango[indice]["descripcion"]
 
 def rangos():
@@ -65,7 +67,7 @@ def proceso(valores):
             r1 = float(triangulo(valor, rango[i]["min"],  (rango[i]["min"]+rango[i]["max"])/2 , rango[i]["max"]))
             linea.append(r1)
         linea.append(max(linea))
-        linea.append(pertenencia(linea))
+        linea.append(pertenencia(linea, valor))
         resultado.append(linea)
         linea = []
 
