@@ -46,6 +46,7 @@ def rangos():
             if traslape():
                 rango.pop()
                 print('Vuelve a introducir el ultimo rango')
+                i -= 1
         i += 1
 
 def triangulo(x, a, b, c):
